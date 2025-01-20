@@ -20,3 +20,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def insert_reservation(user_id, concert_id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "INSERT INTO reservations (user_id, concert_id) VALUES (%s, %s)"
+
+    try:
+        cursor.execute(query, (user_id, concert_id))
+        db.commit()
+    except:
+        db.rollback()
+    finally:
+        db.close()
+
