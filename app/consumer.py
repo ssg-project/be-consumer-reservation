@@ -14,7 +14,7 @@ consumer = KafkaConsumer(
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
 
-def start_consumer():
+async def start_consumer():
     """
     Kafka Consumer 시작 및 메시지 처리 루프 실행
     """
@@ -23,7 +23,7 @@ def start_consumer():
     try:
         for msg in consumer:
             print(f"Received message: {msg.value}")
-            process_reservation(msg.value)  # 비즈니스 로직 호출
+            await process_reservation(msg.value)
             
     except KeyboardInterrupt:
         print("Consumer stopped manually.")

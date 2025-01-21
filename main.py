@@ -1,4 +1,5 @@
 from app.consumer import start_consumer
+import asyncio
 
 if __name__ == '__main__':
-    start_consumer()
+    asyncio.run(start_consumer())

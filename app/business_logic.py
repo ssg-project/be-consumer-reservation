@@ -1,8 +1,8 @@
 from app.mysql_connect import insert_reservation 
 from app.redis_client import redis_client
-from ws_connect import ws_send_success, ws_send_fail
+from app.ws_connect import ws_send_success, ws_send_fail
 
-def process_reservation(message):
+async def process_reservation(message):
     """
     티켓 예약 요청을 처리하는 함수 (Redis 및 DB 활용)
     """
@@ -19,7 +19,7 @@ def process_reservation(message):
     if redis_client.get(user_reserved_key):
         print(f"User {user_id} has already reserved a ticket!")
 
-        ws_send_fail(user_id, concert_id, "already reserved a ticket")
+        await ws_send_fail(user_id, concert_id, "already reserved a ticket")
         return
 
     # Redis에서 현재 예약 수와 좌석 제한 확인
@@ -29,7 +29,7 @@ def process_reservation(message):
     if seat_reserved_count is None or seat_all_count is None:
         print(f"Concert {concert_id} data is missing in Redis. Aborting...")
         
-        ws_send_fail(user_id, concert_id, "concert data is missing")
+        await ws_send_fail(user_id, concert_id, "concert data is missing")
         return
 
     seat_reserved_count = int(seat_reserved_count)
@@ -39,14 +39,14 @@ def process_reservation(message):
     if seat_reserved_count >= seat_all_count:
         print(f"Concert {concert_id} is fully booked!")
 
-        ws_send_fail(user_id, concert_id, "concert is fully booked")
+        await ws_send_fail(user_id, concert_id, "concert is fully booked")
         return
 
     # Redis 잠금 설정
-    if not redis_client.set(lock_key, user_id, ne=True, ex=10):
+    if not redis_client.set(lock_key, user_id, nx=True, ex=10):
         print(f"Concert {concert_id} is already locked!")
 
-        ws_send_fail(user_id, concert_id, "unable to acquire lock")
+        await ws_send_fail(user_id, concert_id, "unable to acquire lock")
         return
 
     try:
@@ -57,21 +57,21 @@ def process_reservation(message):
         if new_reserved_count > seat_all_count:
             print(f"Race condition: Concert {concert_id} is fully booked after increment.")
             redis_client.decr(seat_reserved_count_key)  # 롤백
-            ws_send_fail(user_id, concert_id, "concert is fully booked")
+            await ws_send_fail(user_id, concert_id, "concert is fully booked")
             return
 
         # DB에 예약 정보 저장
         insert_reservation(user_id, concert_id)
 
         # 유저 예약 상태 Redis에 기록
-        redis_client.set(user_reserved_key, "true", ex=3600)  # 1시간 TTL
         print(f"User {user_id} successfully reserved ticket {concert_id}!")
-        ws_send_success(user_id, concert_id)
+        redis_client.set(user_reserved_key, "true", ex=3600)  # 1시간 TTL
+        await ws_send_success(user_id, concert_id)
 
     except Exception as e:
         print(f"Error processing reservation: {e}")
         redis_client.decr(seat_reserved_count_key)
-        ws_send_fail(user_id, concert_id, f"{e}")
+        await ws_send_fail(user_id, concert_id, f"{e}")
 
     finally:
         redis_client.delete(lock_key)
