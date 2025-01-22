@@ -1,3 +1,4 @@
+
 import os
 
 # Kafka 설정
@@ -8,7 +9,7 @@ KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "new-reservation-group")
 # MySQL 설정
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASS = os.getenv("DB_PASS", "enfvh2520!")
-DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
 DB_NAME = os.getenv("DB_NAME", "storage_project")
 # DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
@@ -17,4 +18,4 @@ REDIS_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
 # Websocket 설정
-WEBSOCKET_SERVER_URL = os.getenv("WEBSOCKET_URL", "ws://127.0.0.1:8080/ws")
+WEBSOCKET_SERVER_URL = os.getenv("WEBSOCKET_URL", "ws://127.0.0.1:9000/ws")

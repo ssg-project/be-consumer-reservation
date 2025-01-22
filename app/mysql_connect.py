@@ -1,24 +1,6 @@
 from app.config import DB_HOST, DB_PASS, DB_NAME, DB_USER
 import pymysql
 
-# SQLAlchemy 엔진 및 세션 생성
-# engine = create_engine(
-#     DATABASE_URL,
-#     pool_size=10,
-#     max_overflow=20,
-#     pool_pre_ping=True,
-#     pool_recycle=3600,
-# )
-
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
-
 def insert_reservation(user_id, concert_id):
     connection = pymysql.connect(
         host=DB_HOST,
