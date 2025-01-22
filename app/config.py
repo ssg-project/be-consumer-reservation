@@ -1,5 +1,7 @@
-
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Kafka 설정
 KAFKA_BROKER_URL = os.getenv("KAFKA_BROKER_URL", "127.0.0.1:9092")
@@ -10,7 +12,7 @@ KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "new-reservation-group")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASS = os.getenv("DB_PASS", "enfvh2520!")
 DB_HOST = os.getenv("DB_HOST", "127.0.0.1")
-DB_NAME = os.getenv("DB_NAME", "storage_project")
+DB_NAME = os.getenv("DB_NAME", "ticketing")
 # DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # Redis 설정
