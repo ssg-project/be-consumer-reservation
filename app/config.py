@@ -1,7 +1,7 @@
 import os
 
 # Kafka 설정
-KAFKA_BROKER_URL = os.getenv("KAFKA_BROKER_URL", "localhost:9092")
+KAFKA_BROKER_URL = os.getenv("KAFKA_BROKER_URL", "127.0.0.1:9092")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "ticketing-reservation")
 KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "new-reservation-group")
 
@@ -13,8 +13,8 @@ DB_NAME = os.getenv("DB_NAME", "storage_project")
 # DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
 
 # Redis 설정
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
 
 # Websocket 설정
-WEBSOCKET_SERVER_URL = os.getenv("WEBSOCKET_URL", "ws://localhost:8080/ws")
+WEBSOCKET_SERVER_URL = os.getenv("WEBSOCKET_URL", "ws://127.0.0.1:8080/ws")
