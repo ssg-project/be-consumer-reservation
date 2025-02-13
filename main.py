@@ -1,6 +1,7 @@
 from app.consumer import start_consumer
 import asyncio
 
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
