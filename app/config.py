@@ -1,7 +1,5 @@
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
 
 # Kafka 설정
 KAFKA_BROKER_URL = os.getenv("KAFKA_BROKER_URL", "127.0.0.1:9092")
