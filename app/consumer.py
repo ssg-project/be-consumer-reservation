@@ -1,4 +1,5 @@
 from kafka import KafkaConsumer
+from prometheus_client import start_http_server, Gauge
 import json
 
 from app.business_logic import process_reservation
