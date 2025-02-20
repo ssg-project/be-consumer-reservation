@@ -14,6 +14,9 @@ consumer = KafkaConsumer(
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
 
+# Gauge 메트릭 정의
+message_processing_time = Gauge('kafka_message_processing_time_seconds', 'Time taken to process a Kafka message in seconds')
+
 async def start_consumer():
     """
     Kafka Consumer 시작 및 메시지 처리 루프 실행
@@ -23,7 +26,20 @@ async def start_consumer():
     try:
         for msg in consumer:
             print(f"Received message: {msg.value}")
+            
+            # 메시지 처리 시작 시간 기록
+            start_time = time.time()
+            
+            # 메시지 처리 (예: process_reservation 함수 호출)
             await process_reservation(msg.value)
+            
+            # 메시지 처리 시간 계산
+            processing_time = time.time() - start_time
+            
+            # 처리 시간을 Gauge 메트릭에 기록
+            message_processing_time.set(processing_time)
+            
+            print(f"Message processed in {processing_time:.2f} seconds")
             
     except KeyboardInterrupt:
         print("Consumer stopped manually.")
