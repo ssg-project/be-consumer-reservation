@@ -1,6 +1,7 @@
 from kafka import KafkaConsumer
 from prometheus_client import start_http_server, Gauge
 import json
+import time
 
 from app.business_logic import process_reservation
 from app.config import KAFKA_BROKER_URL, KAFKA_TOPIC, KAFKA_GROUP_ID
@@ -47,3 +48,6 @@ async def start_consumer():
         
     finally:
         consumer.close()
+
+# 실행
+start_consumer()
