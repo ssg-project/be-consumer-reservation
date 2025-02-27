@@ -3,11 +3,7 @@ import websockets
 import json
 import logging
 
-logging.basicConfig(
-    filename='debug.log',
-    level=logging.DEBUG,
-    format='%(asctime)s - %(message)s'
-)
+logger = logging.getLogger(__name__)
 
 async def ws_send_success(user_id, concert_id):
     data = {
@@ -16,6 +12,7 @@ async def ws_send_success(user_id, concert_id):
         "concert_id": concert_id,
         "status": "success",
     }
+    logger.info("ws_send_success")
     # ws = websocket.create_connection(WEBSOCKET_SERVER_URL)
     await send_to_websocket_server(data)
 
@@ -27,6 +24,7 @@ async def ws_send_fail(user_id, concert_id, msg):
         "status": "fail",
         "message": msg
     }
+    logger.info("ws_send_fail")
     await send_to_websocket_server(data)
 
 async def send_to_websocket_server(data):
@@ -34,13 +32,11 @@ async def send_to_websocket_server(data):
         async with websockets.connect(WEBSOCKET_SERVER_URL) as ws:
             await ws.send(json.dumps(data))
 
-            print(f"Message sent to WebSocket server: {data}")
-            logging.debug(f"Message sent to WebSocket server: {data}")
+            logger.info(f"Message sent to WebSocket server: {data}")
 
             response = await ws.recv()
             print(response)
+            logger.info(f"response: {response}")
     except Exception as e:
-        print(WEBSOCKET_SERVER_URL)
-        print(f"Failed to send message to WebSocket server: {e}")
-        logging.debug(WEBSOCKET_SERVER_URL)
-        logging.debug(f"Failed to send message to WebSocket server: {e}")
+        logger.info(WEBSOCKET_SERVER_URL)
+        logger.info(f"Failed to send message to WebSocket server: {e}")
